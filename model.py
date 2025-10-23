@@ -1,36 +1,40 @@
-from typing import List
-from pydantic import BaseModel
-
+from typing import List, Optional
+from pydantic import BaseModel, ConfigDict
+from fastapi import Form
 
 class Todo(BaseModel):
-    id: int
+    id: Optional[int] = None
     item: str
 
-    class Config:
-        schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": 1,
                 "item": "Example schema!"
             }
         }
+    )
 
+    @classmethod
+    def as_form(cls, item: str = Form(...)):
+        return cls(item=item)
 
 class TodoItem(BaseModel):
     item: str
 
-    class Config:
-        schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "item": "Read the next chapter of the book"
             }
         }
-
+    )
 
 class TodoItems(BaseModel):
     todos: List[Todo]
 
-    class Config:
-        schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "todos": [
                     {
@@ -44,3 +48,4 @@ class TodoItems(BaseModel):
                 ]
             }
         }
+    )
